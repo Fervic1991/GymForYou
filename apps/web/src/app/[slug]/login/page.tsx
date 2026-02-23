@@ -38,11 +38,11 @@ export default function GymSlugLoginPage() {
   return (
     <div className='mx-auto w-full max-w-xl space-y-4'>
       <Card>
-        <CardTitle>Login {tenantSlug || 'palestra'}</CardTitle>
-        <p className='mt-1 text-sm text-[var(--text-muted)]'>Accedi alla palestra <strong>{tenantSlug || '-'}</strong>.</p>
+        <CardTitle>{t('login.gym.title')}</CardTitle>
+        <p className='mt-1 text-sm text-[var(--text-muted)]'>{t('login.gym.desc').replace('{slug}', tenantSlug || '-')}</p>
         <form onSubmit={onSubmit} className='mt-4 space-y-3'>
-          <Input placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <Input placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required type='password' />
+          <Input placeholder={t('field.email')} value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input placeholder={t('field.password')} value={password} onChange={(e) => setPassword(e.target.value)} required type='password' />
           <Select value={role} onChange={(e) => setRole(e.target.value as 'OWNER' | 'MANAGER' | 'TRAINER' | 'MEMBER')}>
             <option>OWNER</option>
             <option>MANAGER</option>
@@ -52,7 +52,7 @@ export default function GymSlugLoginPage() {
           <Button block disabled={loading}>{loading ? '...' : t('btn.login')}</Button>
         </form>
         <div className='mt-4 border-t border-[var(--border)] pt-3'>
-          <Link href='/platform/login' className='text-sm text-[var(--primary)] underline underline-offset-2'>Login Super Admin Platform</Link>
+          <Link href='/platform/login' className='text-sm text-[var(--primary)] underline underline-offset-2'>{t('login.gym.platformLink')}</Link>
         </div>
       </Card>
     </div>
