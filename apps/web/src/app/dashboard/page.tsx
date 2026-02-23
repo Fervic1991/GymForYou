@@ -37,27 +37,27 @@ export default function DashboardPage() {
         {loading && Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className='h-28 w-full rounded-[var(--radius-lg)]' />)}
         {!loading && data && (
           <>
-            <KpiCard icon='👥' title='Iscritti attivi' value={data.activeMembers} trend='up' />
-            <KpiCard icon='💶' title='Entrate mese' value={`€ ${Number(data.revenueMonth ?? 0).toFixed(2)}`} trend='up' />
-            <KpiCard icon='✅' title='Presenze settimana' value={data.weekCheckIns} trend='up' />
-            <KpiCard icon='📈' title='Riempimento corsi' value={`${Math.round((data.fillRate || 0) * 100)}%`} trend='flat' />
-            <KpiCard icon='⏳' title='In scadenza (7 giorni)' value={Number(data.expiringMembers ?? 0)} trend={Number(data.expiringMembers ?? 0) > 0 ? 'down' : 'flat'} />
+            <KpiCard icon='👥' title={t('dashboard.kpi.activeMembers')} value={data.activeMembers} trend='up' trendText={t} />
+            <KpiCard icon='💶' title={t('dashboard.kpi.revenueMonth')} value={`€ ${Number(data.revenueMonth ?? 0).toFixed(2)}`} trend='up' trendText={t} />
+            <KpiCard icon='✅' title={t('dashboard.kpi.weekCheckins')} value={data.weekCheckIns} trend='up' trendText={t} />
+            <KpiCard icon='📈' title={t('dashboard.kpi.fillRate')} value={`${Math.round((data.fillRate || 0) * 100)}%`} trend='flat' trendText={t} />
+            <KpiCard icon='⏳' title={t('dashboard.kpi.expiring7d')} value={Number(data.expiringMembers ?? 0)} trend={Number(data.expiringMembers ?? 0) > 0 ? 'down' : 'flat'} trendText={t} />
           </>
         )}
       </div>
 
       <div className='grid gap-4 lg:grid-cols-2'>
         <Card>
-          <CardTitle>Entrate mese</CardTitle>
-          <p className='text-xs text-[var(--muted)]'>Andamento settimanale</p>
+          <CardTitle>{t('dashboard.revenueMonthTitle')}</CardTitle>
+          <p className='text-xs text-[var(--muted)]'>{t('dashboard.revenueMonthSubtitle')}</p>
           <div className='mt-4 grid grid-cols-4 gap-2'>
             {revenueBars.map((x, i) => <Bar key={i} label={`W${i + 1}`} value={x} max={Math.max(...revenueBars, 1)} tone='bg-[var(--accent)]' />)}
           </div>
         </Card>
 
         <Card>
-          <CardTitle>Presenze settimana</CardTitle>
-          <p className='text-xs text-[var(--muted)]'>Lun-Dom</p>
+          <CardTitle>{t('dashboard.weekPresenceTitle')}</CardTitle>
+          <p className='text-xs text-[var(--muted)]'>{t('dashboard.weekPresenceSubtitle')}</p>
           <div className='mt-4 grid grid-cols-7 gap-2'>
             {checkinBars.map((x, i) => <Bar key={i} label={['L','M','M','G','V','S','D'][i]} value={x} max={Math.max(...checkinBars, 1)} tone='bg-[var(--primary)]' />)}
           </div>
@@ -66,26 +66,26 @@ export default function DashboardPage() {
 
       <Card>
         <div className='flex items-center justify-between gap-2'>
-          <CardTitle>Azioni rapide</CardTitle>
+          <CardTitle>{t('dashboard.quickActions')}</CardTitle>
           <Badge tone={Number(data?.expiringMembers ?? 0) > 0 ? 'warning' : 'success'}>
-            {Number(data?.expiringMembers ?? 0)} iscritti in scadenza
+            {Number(data?.expiringMembers ?? 0)} {t('dashboard.expiringBadge')}
           </Badge>
         </div>
         <div className='mt-3 grid gap-2 md:grid-cols-4'>
           <div className='flex items-center gap-2'>
-            <a href='/members'><Button>+ Nuovo membro</Button></a>
+            <a href='/members'><Button>{t('dashboard.action.newMember')}</Button></a>
             <HelpHint text={t('help.dashboard.newMember')} />
           </div>
           <div className='flex items-center gap-2'>
-            <a href='/classes'><Button variant='secondary'>+ Nuova sessione</Button></a>
+            <a href='/classes'><Button variant='secondary'>{t('dashboard.action.newSession')}</Button></a>
             <HelpHint text={t('help.dashboard.newSession')} />
           </div>
           <div className='flex items-center gap-2'>
-            <a href='/checkin'><Button variant='success'>Check-in rapido</Button></a>
+            <a href='/checkin'><Button variant='success'>{t('dashboard.action.quickCheckin')}</Button></a>
             <HelpHint text={t('help.dashboard.checkin')} />
           </div>
           <div className='flex items-center gap-2'>
-            <a href='/billing'><Button variant='warning'>Pagamento manuale</Button></a>
+            <a href='/billing'><Button variant='warning'>{t('dashboard.action.manualPayment')}</Button></a>
             <HelpHint text={t('help.dashboard.manualPayment')} />
           </div>
         </div>
@@ -94,13 +94,13 @@ export default function DashboardPage() {
   );
 }
 
-function KpiCard({ icon, title, value, trend }: { icon: string; title: string; value: string | number; trend: 'up' | 'down' | 'flat' }) {
+function KpiCard({ icon, title, value, trend, trendText }: { icon: string; title: string; value: string | number; trend: 'up' | 'down' | 'flat'; trendText: (key: string) => string }) {
   return (
     <Card className='p-5'>
       <div className='flex items-start justify-between gap-2'>
         <p className='text-xl'>{icon}</p>
         <Badge tone={trend === 'up' ? 'success' : trend === 'down' ? 'danger' : 'info'}>
-          {trend === 'up' ? 'Trend ↑' : trend === 'down' ? 'Trend ↓' : 'Trend →'}
+          {trend === 'up' ? trendText('dashboard.trendUp') : trend === 'down' ? trendText('dashboard.trendDown') : trendText('dashboard.trendFlat')}
         </Badge>
       </div>
       <p className='mt-2 text-sm text-[var(--muted)]'>{title}</p>

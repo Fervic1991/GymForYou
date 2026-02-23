@@ -148,11 +148,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <header className='sticky top-0 z-20 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,transparent)] px-4 py-3 backdrop-blur'>
           <div className='flex items-center justify-between gap-2'>
             <div>
-              <p className='text-sm font-semibold text-[var(--text)]'>Gym SaaS Member</p>
-              <p className='text-xs text-[var(--muted)]'>Allenati con continuita</p>
+              <p className='text-sm font-semibold text-[var(--text)]'>{t('shell.memberTitle')}</p>
+              <p className='text-xs text-[var(--muted)]'>{t('shell.memberSubtitle')}</p>
             </div>
             <div className='flex items-center gap-2'>
-              <Button variant='ghost' onClick={toggleTheme}>{theme === 'dark' ? 'Light' : 'Dark'}</Button>
+              <Button variant='ghost' onClick={toggleTheme}>{theme === 'dark' ? t('theme.lightShort') : t('theme.darkShort')}</Button>
               {canShowRestart && (
                 <Button variant='ghost' onClick={startTour}>{t('tour.restart')}</Button>
               )}
@@ -178,7 +178,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <aside className='hidden h-[calc(100vh-2rem)] w-72 shrink-0 rounded-[var(--radius-xl)] border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] p-4 shadow-[var(--shadow-md)] md:flex md:flex-col'>
           <div>
             <p className='text-lg font-bold text-[var(--text)]'>Gym SaaS</p>
-            <p className='text-xs text-[var(--muted)]'>Reception Workspace</p>
+            <p className='text-xs text-[var(--muted)]'>{t('shell.receptionWorkspace')}</p>
           </div>
 
           <nav className='mt-5 space-y-1.5'>
@@ -191,8 +191,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className='mt-auto space-y-2 border-t border-[var(--border)] pt-4'>
-            <p className='text-xs text-[var(--muted)]'>Palestra: <span className='text-[var(--text)]'>{tenantName || 'Palestra demo'}</span></p>
-            <Button variant='ghost' block onClick={toggleTheme}>{theme === 'dark' ? 'Tema chiaro' : 'Tema scuro'}</Button>
+            <p className='text-xs text-[var(--muted)]'>{t('shell.gymLabel')}: <span className='text-[var(--text)]'>{tenantName || t('shell.gymFallback')}</span></p>
+            <Button variant='ghost' block onClick={toggleTheme}>{theme === 'dark' ? t('theme.light') : t('theme.dark')}</Button>
             {canShowRestart && <Button variant='ghost' block onClick={startTour}>{t('tour.restart')}</Button>}
             {isLogged ? <Button variant='danger' block onClick={logout}>{t('btn.logout')}</Button> : <Link href='/login'><Button block>{t('btn.login')}</Button></Link>}
           </div>
@@ -202,13 +202,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <header className='rounded-[var(--radius-xl)] border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-3 py-3 shadow-[var(--shadow-sm)] md:px-4'>
             <div className='flex items-center justify-between gap-3'>
               <div>
-                <p className='text-sm font-semibold text-[var(--text)] md:text-base'>Staff Console</p>
-                <p className='text-xs text-[var(--muted)]'>Operazioni rapide reception e controllo palestra</p>
+                <p className='text-sm font-semibold text-[var(--text)] md:text-base'>{t('shell.staffConsole')}</p>
+                <p className='text-xs text-[var(--muted)]'>{t('shell.staffSubtitle')}</p>
               </div>
               <div className='flex items-center gap-2'>
-                <Button className='hidden md:inline-flex' variant='ghost' onClick={toggleTheme}>{theme === 'dark' ? 'Tema chiaro' : 'Tema scuro'}</Button>
+                <Button className='hidden md:inline-flex' variant='ghost' onClick={toggleTheme}>{theme === 'dark' ? t('theme.light') : t('theme.dark')}</Button>
                 <button className='inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] px-3 text-sm text-[var(--text)] md:hidden' onClick={() => setMobileMenuOpen((x) => !x)}>
-                  Menu
+                  {t('shell.menu')}
                 </button>
               </div>
             </div>
