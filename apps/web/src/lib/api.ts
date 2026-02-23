@@ -14,6 +14,13 @@ export type ResolveJoinResponse = {
   status: string;
 };
 
+export type ResolveTenantSlugResponse = {
+  tenantId: string;
+  tenantName: string;
+  defaultLocale: 'it' | 'es';
+  status: string;
+};
+
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const headers: Record<string, string> = {
@@ -77,6 +84,12 @@ export async function platformLogin(payload: { email: string; password: string }
 
 export async function resolveJoin(code: string): Promise<ResolveJoinResponse> {
   const res = await fetch(`${API_URL}/join/${encodeURIComponent(code)}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function resolveTenantBySlug(slug: string): Promise<ResolveTenantSlugResponse> {
+  const res = await fetch(`${API_URL}/tenants/resolve?slug=${encodeURIComponent(slug)}`);
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }

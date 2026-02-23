@@ -1,9 +1,9 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { login } from '@/lib/api';
+import { login, resolveTenantBySlug } from '@/lib/api';
 import { Card, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -19,7 +19,14 @@ export default function GymSlugLoginPage() {
   const [role, setRole] = useState<'OWNER' | 'MANAGER' | 'TRAINER' | 'MEMBER'>('OWNER');
   const [loading, setLoading] = useState(false);
   const { push } = useToast();
-  const { t } = useI18n();
+  const { t, setTenantPreviewLocale } = useI18n();
+
+  useEffect(() => {
+    if (!tenantSlug) return;
+    resolveTenantBySlug(tenantSlug)
+      .then((data) => setTenantPreviewLocale(data.defaultLocale === 'es' ? 'es' : 'it'))
+      .catch(() => {});
+  }, [setTenantPreviewLocale, tenantSlug]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();

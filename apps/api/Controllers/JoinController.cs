@@ -44,4 +44,22 @@ public class JoinController : ControllerBase
         var locale = tenant.DefaultLocale is "it" or "es" ? tenant.DefaultLocale : "it";
         return Ok(new { tenantName = tenant.Name, defaultLocale = locale, status = "ACTIVE" });
     }
+
+    [HttpGet("tenants/resolve")]
+    [EnableRateLimiting("onboarding")]
+    public async Task<IActionResult> ResolveTenantBySlug([FromQuery] string slug)
+    {
+        var normalized = (slug ?? string.Empty).Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(normalized))
+            return BadRequest("slug required");
+
+        var tenant = await _db.Tenants.IgnoreQueryFilters()
+            .FirstOrDefaultAsync(x => x.Slug == normalized);
+
+        if (tenant is null) return NotFound("Tenant not found");
+        if (tenant.IsSuspended) return StatusCode(403, new { error = "Tenant suspended" });
+
+        var locale = tenant.DefaultLocale is "it" or "es" ? tenant.DefaultLocale : "it";
+        return Ok(new { tenantId = tenant.Id, tenantName = tenant.Name, defaultLocale = locale, status = "ACTIVE" });
+    }
 }
