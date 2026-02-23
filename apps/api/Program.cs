@@ -64,9 +64,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-var webBaseUrl = builder.Configuration["WEB_BASE_URL"] ?? "http://localhost:13000";
-var corsOrigins = webBaseUrl
+var configuredOrigins = string.Join(",",
+    builder.Configuration["WEB_BASE_URL"],
+    builder.Configuration["Cors:AllowedOrigins"],
+    builder.Configuration["Cors__AllowedOrigins"],
+    builder.Configuration["CORS_ALLOWED_ORIGINS"]);
+
+var corsOrigins = configuredOrigins
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    .Select(Program.NormalizeOrigin)
+    .Where(x => !string.IsNullOrWhiteSpace(x))
     .Append("http://localhost:13000")
     .Append("http://127.0.0.1:13000")
     .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -127,4 +134,16 @@ using (var scope = app.Services.CreateScope())
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+    public static string NormalizeOrigin(string raw)
+    {
+        var value = raw.Trim().TrimEnd('/');
+        if (Uri.TryCreate(value, UriKind.Absolute, out var uri))
+        {
+            return uri.GetLeftPart(UriPartial.Authority);
+        }
+
+        return value;
+    }
+}
